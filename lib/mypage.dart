@@ -184,7 +184,6 @@ class _MyPageState extends State<MyPage> {
                                       ? Icons.stop_outlined
                                       : Icons.play_arrow_outlined),
                                   onTap: () {
-                                    print(rfileSnapshot[index].path);
                                     play(rfileSnapshot[index].path, index);
                                   },
                                 ),
@@ -213,7 +212,6 @@ class _MyPageState extends State<MyPage> {
                       ),
                       onTap: () {
                         setState(() {
-                          print(rfileSnapshot[index].path);
                           play(rfileSnapshot[index].path, index);
                         });
                       }));
@@ -230,13 +228,12 @@ class _MyPageState extends State<MyPage> {
         if (snapshot.connectionState != ConnectionState.done)
           return Center(child: CircularProgressIndicator());
         vfileSnapshot = snapshot.data;
-        print("==============================$vfileSnapshot");
-        print("file length : ${vfile.length}");
-        print("db length : ${vfileSnapshot.length}");
+        // print("==============================$vfileSnapshot");
+        // print("file length : ${vfile.length}");
+        // print("db length : ${vfileSnapshot.length}");
         return ListView.builder(
           itemCount: vfile.length,
           itemBuilder: (context, index) {
-            print(vfile.length);
             return Container(
                 margin: EdgeInsets.only(
                     bottom: index == vfile.length - 1 ? 22 : 14),
@@ -460,7 +457,6 @@ class _MyPageState extends State<MyPage> {
   }
 
   void play(String mPath, int i) async {
-    //print(mPath);
     if (!_mPlayerIsInited) {
       return null;
     }

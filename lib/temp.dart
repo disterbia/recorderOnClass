@@ -160,6 +160,8 @@ class _MyAppState extends State<MyApp2> with WidgetsBindingObserver {
     _homeButtonSubscription = HardwareButtons.homeButtonEvents.listen((event) {
       seq.stop();
       if (isRecording == true) stopRecording();
+      isFirstPlayPress = true;
+      isFirstStop = false;
       setState(() {
         widgetState = 0;
       });
@@ -172,6 +174,8 @@ class _MyAppState extends State<MyApp2> with WidgetsBindingObserver {
     _lockButtonSubscription = HardwareButtons.lockButtonEvents.listen((event) {
       seq.stop();
       if (isRecording == true) stopRecording();
+      isFirstPlayPress = true;
+      isFirstStop = false;
       setState(() {
         widgetState = 0;
       });
@@ -215,7 +219,6 @@ class _MyAppState extends State<MyApp2> with WidgetsBindingObserver {
     if (vController != null) vController.dispose();
     _homeButtonSubscription?.cancel();
     _lockButtonSubscription?.cancel();
-    controller.removeListener(() {});
     controller.dispose();
     cameras.clear();
     super.dispose();
@@ -241,17 +244,17 @@ class _MyAppState extends State<MyApp2> with WidgetsBindingObserver {
       // }
       controller = CameraController(
         cameras[1],
-        ResolutionPreset.ultraHigh,
+        ResolutionPreset.medium,
         enableAudio: enableAudio,
       );
 
       // If the controller is updated then update the UI.
-      controller.addListener(() {
-        if (controller.value.hasError) {
-          //showInSnackBar('Camera error ${controller.value.errorDescription}');
-
-        }
-      });
+      // controller.addListener(() {
+      //   if (controller.value.hasError) {
+      //     //showInSnackBar('Camera error ${controller.value.errorDescription}');
+      //
+      //   }
+      // });
 
       try {
         await controller.initialize();
@@ -344,20 +347,23 @@ class _MyAppState extends State<MyApp2> with WidgetsBindingObserver {
     recorderTrack.addVolumeChange(volume: 0, beat: 0);
     overlayScreen(height);
     seq.play();
-    stopRecording();
+    seq.stop();
 
     await startVideoRecording();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Overlay.of(context).insert(overlay);
-    });
-    await Future.delayed(Duration(milliseconds: 1000));
-    startMusic();
+    Overlay.of(context).insert(overlay);
     if (!isDisposed)
       setState(() {
         widgetState = 1;
         check.fillRange(0, ckLeng, 0);
         temp.fillRange(0, ckLeng, 0);
       });
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   Overlay.of(context).insert(overlay);
+    // });
+    await Future.delayed(Duration(milliseconds: 1000),(){
+      startMusic();
+    });
+
   }
 
   Future<void> startVideoRecording() async {
@@ -437,28 +443,36 @@ class _MyAppState extends State<MyApp2> with WidgetsBindingObserver {
     );
   }
 
-  void loadingOverlayScreen() {
+  void loadingOverlayScreen(bool isVRecord,double height) {
     loadingOverlay = OverlayEntry(
       builder: (context) {
         // var height = MediaQuery.of(context).size.height;
         // var width = MediaQuery.of(context).size.width;
-        Future.delayed(Duration(milliseconds: 2500), () {
+         Future.delayed(Duration(milliseconds: isVRecord?5000:3000), () {
           if (loadingOverlay != null) {
             loadingOverlay.remove();
             loadingOverlay = null;
+            if(isVRecord)
+              onVideoRecordButtonPressed(height);
           }
-          if (!isDisposed)
-            setState(() {
-              widgetState = 0;
-            });
+          if(!isVRecord)
+            if (!isDisposed)
+              setState(() {
+                widgetState = 0;
+             });
         });
         return Scaffold(
             backgroundColor: Colors.white.withOpacity(0.6),
-            body: Center(
-              child: CircularProgressIndicator(),
+            body: Column(mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Center(child: CircularProgressIndicator()),
+                SizedBox(height: 10,),
+                Center(child: Text(isVRecord?"녹화 준비 중입니다..\n촬영 준비를 해주세요.":" "))
+              ],
             ));
       },
     );
+    Overlay.of(context).insert(loadingOverlay);
   }
 
   double thisTempo = 0;
@@ -875,7 +889,7 @@ class _MyAppState extends State<MyApp2> with WidgetsBindingObserver {
           ),
         ],
       ),
-      onPressed: () {
+      onPressed: () async{
         if (isFirstPlayPress) {
           isFirstPlayPress = false;
           isFirstStop = true;
@@ -883,7 +897,7 @@ class _MyAppState extends State<MyApp2> with WidgetsBindingObserver {
           if (controller != null &&
               controller.value.isInitialized &&
               !controller.value.isRecordingVideo) {
-            onVideoRecordButtonPressed(height);
+            loadingOverlayScreen(true,height);
             isSound = false;
           }
           scrollController.scrollTo(
@@ -910,10 +924,7 @@ class _MyAppState extends State<MyApp2> with WidgetsBindingObserver {
             onStopButtonPressed();
             scrollController.scrollTo(
                 index: 0, duration: Duration(milliseconds: 300));
-            loadingOverlayScreen();
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              Overlay.of(context).insert(loadingOverlay);
-            });
+            loadingOverlayScreen(false,height);
           }
         },
         child: Column(
@@ -976,7 +987,7 @@ class _MyAppState extends State<MyApp2> with WidgetsBindingObserver {
               fit: BoxFit.cover,
               child: Text(
                 "도전하기",
-                style: TextStyle(fontSize: height * 0.05),
+                style: TextStyle(fontSize: height * 0.05,fontWeight:FontWeight.w500),
               ),
             ),
           ],
@@ -1004,7 +1015,7 @@ class _MyAppState extends State<MyApp2> with WidgetsBindingObserver {
         children: [
           Text(
             "연습하기",
-            style: TextStyle(fontSize: height * 0.05),
+            style: TextStyle(fontSize: height * 0.05,fontWeight:FontWeight.w500),
           ),
         ],
       ),
@@ -1061,10 +1072,7 @@ class _MyAppState extends State<MyApp2> with WidgetsBindingObserver {
           stopRecording();
           scrollController.scrollTo(
               index: 0, duration: Duration(milliseconds: 300));
-          loadingOverlayScreen();
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            Overlay.of(context).insert(loadingOverlay);
-          });
+          loadingOverlayScreen(false,height);
         }
       },
       child: Column(

@@ -36,7 +36,6 @@ class GamePageState extends State<GamePage> with SingleTickerProviderStateMixin 
   bool isDisposed = false;
 
   void initState() {
-    print("game init");
     os = Platform.isAndroid;
     detector = Pitchdetector(
         sampleRate: os ? 44100 : 5514, sampleSize: os ? 4096 : 1024);
@@ -89,7 +88,6 @@ class GamePageState extends State<GamePage> with SingleTickerProviderStateMixin 
 
   @override
   void dispose() {
-    print("game dispose");
     isDisposed=true;
     if(detector.isRecording) detector.stopRecording();
     _tabController.dispose();
@@ -182,13 +180,13 @@ class GamePageState extends State<GamePage> with SingleTickerProviderStateMixin 
             child: TabBarView(
               controller: _tabController,
               children: [
-                TabViewChild(7,dpSuffix,15),
-                TabViewChild(0,dpSuffix,12),
-                TabViewChild(6,dpSuffix,6),
-                TabViewChild(16,dpSuffix,12),
-                TabViewChild(8,dpSuffix,12),
-                TabViewChild(11,dpSuffix,9),
-                TabViewChild(13,dpSuffix,12),
+                TabViewChild(7,dpSuffix,15,fullScreenSize.height),
+                TabViewChild(0,dpSuffix,12,fullScreenSize.height),
+                TabViewChild(6,dpSuffix,6,fullScreenSize.height),
+                TabViewChild(16,dpSuffix,12,fullScreenSize.height),
+                TabViewChild(8,dpSuffix,12,fullScreenSize.height),
+                TabViewChild(11,dpSuffix,9,fullScreenSize.height),
+                TabViewChild(13,dpSuffix,12,fullScreenSize.height),
               ],
             )
         ),
@@ -196,7 +194,7 @@ class GamePageState extends State<GamePage> with SingleTickerProviderStateMixin 
     );
   }
 
-  Widget TabViewChild(int temp ,double _dpSuffix,int length){
+  Widget TabViewChild(int temp ,double _dpSuffix,int length,double height){
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 8 * _dpSuffix),
       child: Column(
@@ -311,7 +309,7 @@ class GamePageState extends State<GamePage> with SingleTickerProviderStateMixin 
                                           isGameStarted ? "종료하기" : "시작하기",
                                           style: TextStyle(
                                               color: Colors.black,
-                                              fontSize: 16,
+                                              fontSize: height*0.023,
                                               fontWeight: FontWeight.w500))),
                                 ),
                                 onTap: () {

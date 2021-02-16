@@ -84,16 +84,16 @@ class _SongListState extends State<SongList> {
   }
   @override
   Widget build(BuildContext context) {
-    path
-        .getExternalStorageDirectory()
-        .then((value) => print("1.${value.path}")); //android
-    path
-        .getApplicationDocumentsDirectory()
-        .then((value) => print("2.${value.path}")); //ios
-    path
-        .getApplicationSupportDirectory()
-        .then((value) => print("3.${value.path}"));
-    path.getTemporaryDirectory().then((value) => print("4.${value.path}"));
+    // path
+    //     .getExternalStorageDirectory()
+    //     .then((value) => print("1.${value.path}")); //android
+    // path
+    //     .getApplicationDocumentsDirectory()
+    //     .then((value) => print("2.${value.path}")); //ios
+    // path
+    //     .getApplicationSupportDirectory()
+    //     .then((value) => print("3.${value.path}"));
+    // path.getTemporaryDirectory().then((value) => print("4.${value.path}"));
     final fullScreenSize = MediaQuery.of(context).size;
     return Container(
       width: fullScreenSize.width,

@@ -45,9 +45,9 @@ class _VideoPlayPageState extends State<VideoPlayPage> {
   Future<bool> _startVideoPlayer(String path) async {
     vController = VideoPlayerController.file(File(videoFile));
     video = await info.getVideoInfo(path);
-    print("height : ${video.height}");
-    print("width : ${video.width}");
-    print("orientation : ${video.orientation}");
+    // print("height : ${video.height}");
+    // print("width : ${video.width}");
+    // print("orientation : ${video.orientation}");
     videoPlayerListener = () {
       if (videoController != null && videoController.value.size != null) {
         setState(() {});

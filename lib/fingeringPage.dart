@@ -32,7 +32,6 @@ class FingeringPageState extends State<FingeringPage>  with SingleTickerProvider
 
   @override
   void initState() {
-    print("finger init");
     os = Platform.isAndroid;
     detector = Pitchdetector(
         sampleRate: os ? 44100 : 5514, sampleSize: os ? 4096 : 1024);
@@ -74,7 +73,6 @@ class FingeringPageState extends State<FingeringPage>  with SingleTickerProvider
   }
   @override
   void dispose() {
-    print("finger dispose");
     if(detector.isRecording)
       detector.stopRecording();
     _tabController.dispose();
@@ -160,8 +158,8 @@ class FingeringPageState extends State<FingeringPage>  with SingleTickerProvider
             child: TabBarView(
               controller: _tabController,
               children: [
-                TabViewChild(true,dpSuffix),
-                TabViewChild(false,dpSuffix)
+                TabViewChild(true,dpSuffix,fullScreenSize.height),
+                TabViewChild(false,dpSuffix,fullScreenSize.height)
               ],
             )
         ),
@@ -169,7 +167,7 @@ class FingeringPageState extends State<FingeringPage>  with SingleTickerProvider
     );
   }
 
-  Widget TabViewChild(bool isGermanPressed ,double _dpSuffix){
+  Widget TabViewChild(bool isGermanPressed ,double _dpSuffix,double height){
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 16),
       child: Column(
@@ -346,7 +344,7 @@ class FingeringPageState extends State<FingeringPage>  with SingleTickerProvider
                                 color:Colors.black,
                                 borderRadius: BorderRadius.circular(4*_dpSuffix),
                               ),
-                              child:Center(child: Text(isGameStarted? "종료하기": "운지찾기", style: TextStyle(color:Colors.white,fontSize: 16, fontWeight: FontWeight.w500))),
+                              child:Center(child: Text(isGameStarted? "종료하기": "운지찾기", style: TextStyle(color:Colors.white,fontSize: height*0.023, fontWeight: FontWeight.w500))),
                             ),
                             onTap:(){
                               isGameStarted?gameStop():gamePlay();
@@ -364,7 +362,7 @@ class FingeringPageState extends State<FingeringPage>  with SingleTickerProvider
                                 color:isGameStarted?  Color(0xff949494) : Colors.black,
                                 borderRadius: BorderRadius.circular(4*_dpSuffix),
                               ),
-                              child:Center(child: Text("연습하기", style: TextStyle(color:Colors.white, fontSize:16, fontWeight: FontWeight.w500,))),
+                              child:Center(child: Text("연습하기", style: TextStyle(color:Colors.white, fontSize:height*0.023, fontWeight: FontWeight.w500,))),
                             ),
                             onTap: (){
                               if(!isGameStarted){

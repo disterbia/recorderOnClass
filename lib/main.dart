@@ -212,7 +212,7 @@ class _MainPageState extends State<MainPage> {
                                                         )
                                                     );
                                                   },
-                                                  child: Text("단계별 학습 내용",style: TextStyle(fontSize: fullScreenSize.height*0.024, color: Colors.white,fontWeight: FontWeight.w500))),
+                                                  child: Text("단계별 학습 내용",style: TextStyle(fontSize: fullScreenSize.height*0.023, color: Colors.white,fontWeight: FontWeight.w500))),
                                             ),
                                           ),
                                         ),
@@ -230,7 +230,7 @@ class _MainPageState extends State<MainPage> {
                                                     MaterialPageRoute(
                                                       builder: (context) => FingeringPage(),
                                                     ));
-                                              },child:Text("단계별 연습",style: TextStyle(fontSize:fullScreenSize.height*0.024, color: Colors.white))),
+                                              },child:Text("단계별 연습",style: TextStyle(fontSize:fullScreenSize.height*0.023, color: Colors.white))),
                                             ),
                                           ),
                                         ),
